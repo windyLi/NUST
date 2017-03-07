@@ -1,5 +1,5 @@
 /**
- * C: DijkstraËã·¨»ñÈ¡×î¶ÌÂ·¾¶(ÁÚ½Ó±í)
+ * C: Dijkstraç®—æ³•è·å–æœ€çŸ­è·¯å¾„(é‚»æ¥è¡¨)
  *
  * @author skywang
  * @date 2014/04/24
@@ -11,35 +11,35 @@
 #include <string.h>
 
 #define MAX         100
-#define INF         (~(0x1<<31))        // ×î´óÖµ(¼´0X7FFFFFFF)
+#define INF         (~(0x1<<31))        // æœ€å¤§å€¼(å³0X7FFFFFFF)
 #define isLetter(a) ((((a)>='a')&&((a)<='z')) || (((a)>='A')&&((a)<='Z')))
 #define LENGTH(a)   (sizeof(a)/sizeof(a[0]))
 
-// ÁÚ½Ó±íÖĞ±í¶ÔÓ¦µÄÁ´±íµÄ¶¥µã
+// é‚»æ¥è¡¨ä¸­è¡¨å¯¹åº”çš„é“¾è¡¨çš„é¡¶ç‚¹
 typedef struct _ENode
 {
-    int ivex;                   // ¸Ã±ßµÄ¶¥µãµÄÎ»ÖÃ
-    int weight;                 // ¸Ã±ßµÄÈ¨
-    struct _ENode *next_edge;   // Ö¸ÏòÏÂÒ»Ìõ»¡µÄÖ¸Õë
+    int ivex;                   // è¯¥è¾¹çš„é¡¶ç‚¹çš„ä½ç½®
+    int weight;                 // è¯¥è¾¹çš„æƒ
+    struct _ENode *next_edge;   // æŒ‡å‘ä¸‹ä¸€æ¡å¼§çš„æŒ‡é’ˆ
 }ENode, *PENode;
 
-// ÁÚ½Ó±íÖĞ±íµÄ¶¥µã
+// é‚»æ¥è¡¨ä¸­è¡¨çš„é¡¶ç‚¹
 typedef struct _VNode
 {
-    char data;              // ¶¥µãĞÅÏ¢
-    ENode *first_edge;      // Ö¸ÏòµÚÒ»ÌõÒÀ¸½¸Ã¶¥µãµÄ»¡
+    char data;              // é¡¶ç‚¹ä¿¡æ¯
+    ENode *first_edge;      // æŒ‡å‘ç¬¬ä¸€æ¡ä¾é™„è¯¥é¡¶ç‚¹çš„å¼§
 }VNode;
 
-// ÁÚ½Ó±í
+// é‚»æ¥è¡¨
 typedef struct _LGraph
 {
-    int vexnum;             // Í¼µÄ¶¥µãµÄÊıÄ¿
-    int edgnum;             // Í¼µÄ±ßµÄÊıÄ¿
+    int vexnum;             // å›¾çš„é¡¶ç‚¹çš„æ•°ç›®
+    int edgnum;             // å›¾çš„è¾¹çš„æ•°ç›®
     VNode vexs[MAX];
 }LGraph;
 
 /*
- * ·µ»ØchÔÚmatrix¾ØÕóÖĞµÄÎ»ÖÃ
+ * è¿”å›chåœ¨matrixçŸ©é˜µä¸­çš„ä½ç½®
  */
 static int get_position(LGraph G, char ch)
 {
@@ -51,7 +51,7 @@ static int get_position(LGraph G, char ch)
 }
 
 /*
- * ¶ÁÈ¡Ò»¸öÊäÈë×Ö·û
+ * è¯»å–ä¸€ä¸ªè¾“å…¥å­—ç¬¦
  */
 static char read_char()
 {
@@ -65,7 +65,7 @@ static char read_char()
 }
 
 /*
- * ½«nodeÁ´½Óµ½listµÄÄ©Î²
+ * å°†nodeé“¾æ¥åˆ°listçš„æœ«å°¾
  */
 static void link_last(ENode *list, ENode *node)
 {
@@ -77,7 +77,7 @@ static void link_last(ENode *list, ENode *node)
 }
 
 /*
- * ´´½¨ÁÚ½Ó±í¶ÔÓ¦µÄÍ¼(×Ô¼ºÊäÈë)
+ * åˆ›å»ºé‚»æ¥è¡¨å¯¹åº”çš„å›¾(è‡ªå·±è¾“å…¥)
  */
 LGraph* create_lgraph()
 {
@@ -88,7 +88,7 @@ LGraph* create_lgraph()
     ENode *node1, *node2;
     LGraph* pG;
 
-    // ÊäÈë"¶¥µãÊı"ºÍ"±ßÊı"
+    // è¾“å…¥"é¡¶ç‚¹æ•°"å’Œ"è¾¹æ•°"
     printf("input vertex number: ");
     scanf("%d", &v);
     printf("input edge number: ");
@@ -103,10 +103,10 @@ LGraph* create_lgraph()
         return NULL;
     memset(pG, 0, sizeof(LGraph));
 
-    // ³õÊ¼»¯"¶¥µãÊı"ºÍ"±ßÊı"
+    // åˆå§‹åŒ–"é¡¶ç‚¹æ•°"å’Œ"è¾¹æ•°"
     pG->vexnum = v;
     pG->edgnum = e;
-    // ³õÊ¼»¯"ÁÚ½Ó±í"µÄ¶¥µã
+    // åˆå§‹åŒ–"é‚»æ¥è¡¨"çš„é¡¶ç‚¹
     for(i=0; i<pG->vexnum; i++)
     {
         printf("vertex(%d): ", i);
@@ -114,10 +114,10 @@ LGraph* create_lgraph()
         pG->vexs[i].first_edge = NULL;
     }
 
-    // ³õÊ¼»¯"ÁÚ½Ó±í"µÄ±ß
+    // åˆå§‹åŒ–"é‚»æ¥è¡¨"çš„è¾¹
     for(i=0; i<pG->edgnum; i++)
     {
-        // ¶ÁÈ¡±ßµÄÆğÊ¼¶¥µã,½áÊø¶¥µã,È¨
+        // è¯»å–è¾¹çš„èµ·å§‹é¡¶ç‚¹,ç»“æŸé¡¶ç‚¹,æƒ
         printf("edge(%d): ", i);
         c1 = read_char();
         c2 = read_char();
@@ -126,20 +126,20 @@ LGraph* create_lgraph()
         p1 = get_position(*pG, c1);
         p2 = get_position(*pG, c2);
 
-        // ³õÊ¼»¯node1
+        // åˆå§‹åŒ–node1
         node1 = (ENode*)malloc(sizeof(ENode));
         node1->ivex = p2;
         node1->weight = weight;
-        // ½«node1Á´½Óµ½"p1ËùÔÚÁ´±íµÄÄ©Î²"
+        // å°†node1é“¾æ¥åˆ°"p1æ‰€åœ¨é“¾è¡¨çš„æœ«å°¾"
         if(pG->vexs[p1].first_edge == NULL)
           pG->vexs[p1].first_edge = node1;
         else
             link_last(pG->vexs[p1].first_edge, node1);
-        // ³õÊ¼»¯node2
+        // åˆå§‹åŒ–node2
         node2 = (ENode*)malloc(sizeof(ENode));
         node2->ivex = p1;
         node2->weight = weight;
-        // ½«node2Á´½Óµ½"p2ËùÔÚÁ´±íµÄÄ©Î²"
+        // å°†node2é“¾æ¥åˆ°"p2æ‰€åœ¨é“¾è¡¨çš„æœ«å°¾"
         if(pG->vexs[p2].first_edge == NULL)
             pG->vexs[p2].first_edge = node2;
         else
@@ -149,19 +149,19 @@ LGraph* create_lgraph()
     return pG;
 }
 
-// ±ßµÄ½á¹¹Ìå
+// è¾¹çš„ç»“æ„ä½“
 typedef struct _edata
 {
-    char start; // ±ßµÄÆğµã
-    char end;   // ±ßµÄÖÕµã
-    int weight; // ±ßµÄÈ¨ÖØ
+    char start; // è¾¹çš„èµ·ç‚¹
+    char end;   // è¾¹çš„ç»ˆç‚¹
+    int weight; // è¾¹çš„æƒé‡
 }EData;
 
-// ¶¥µã
+// é¡¶ç‚¹
 static char  gVexs[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
-// ±ß
+// è¾¹
 static EData gEdges[] = {
-  // Æğµã ÖÕµã È¨
+  // èµ·ç‚¹ ç»ˆç‚¹ æƒ
     {'A', 'B', 12}, 
     {'A', 'F', 16}, 
     {'A', 'G', 14}, 
@@ -177,7 +177,7 @@ static EData gEdges[] = {
 };
 
 /*
- * ´´½¨ÁÚ½Ó±í¶ÔÓ¦µÄÍ¼(ÓÃÒÑÌá¹©µÄÊı¾İ)
+ * åˆ›å»ºé‚»æ¥è¡¨å¯¹åº”çš„å›¾(ç”¨å·²æä¾›çš„æ•°æ®)
  */
 LGraph* create_example_lgraph()
 {
@@ -193,20 +193,20 @@ LGraph* create_example_lgraph()
         return NULL;
     memset(pG, 0, sizeof(LGraph));
 
-    // ³õÊ¼»¯"¶¥µãÊı"ºÍ"±ßÊı"
+    // åˆå§‹åŒ–"é¡¶ç‚¹æ•°"å’Œ"è¾¹æ•°"
     pG->vexnum = vlen;
     pG->edgnum = elen;
-    // ³õÊ¼»¯"ÁÚ½Ó±í"µÄ¶¥µã
+    // åˆå§‹åŒ–"é‚»æ¥è¡¨"çš„é¡¶ç‚¹
     for(i=0; i<pG->vexnum; i++)
     {
         pG->vexs[i].data = gVexs[i];
         pG->vexs[i].first_edge = NULL;
     }
 
-    // ³õÊ¼»¯"ÁÚ½Ó±í"µÄ±ß
+    // åˆå§‹åŒ–"é‚»æ¥è¡¨"çš„è¾¹
     for(i=0; i<pG->edgnum; i++)
     {
-        // ¶ÁÈ¡±ßµÄÆğÊ¼¶¥µã,½áÊø¶¥µã,È¨
+        // è¯»å–è¾¹çš„èµ·å§‹é¡¶ç‚¹,ç»“æŸé¡¶ç‚¹,æƒ
         c1 = gEdges[i].start;
         c2 = gEdges[i].end;
         weight = gEdges[i].weight;
@@ -214,20 +214,20 @@ LGraph* create_example_lgraph()
         p1 = get_position(*pG, c1);
         p2 = get_position(*pG, c2);
 
-        // ³õÊ¼»¯node1
+        // åˆå§‹åŒ–node1
         node1 = (ENode*)malloc(sizeof(ENode));
         node1->ivex = p2;
         node1->weight = weight;
-        // ½«node1Á´½Óµ½"p1ËùÔÚÁ´±íµÄÄ©Î²"
+        // å°†node1é“¾æ¥åˆ°"p1æ‰€åœ¨é“¾è¡¨çš„æœ«å°¾"
         if(pG->vexs[p1].first_edge == NULL)
             pG->vexs[p1].first_edge = node1;
         else
             link_last(pG->vexs[p1].first_edge, node1);
-        // ³õÊ¼»¯node2
+        // åˆå§‹åŒ–node2
         node2 = (ENode*)malloc(sizeof(ENode));
         node2->ivex = p1;
         node2->weight = weight;
-        // ½«node2Á´½Óµ½"p2ËùÔÚÁ´±íµÄÄ©Î²"
+        // å°†node2é“¾æ¥åˆ°"p2æ‰€åœ¨é“¾è¡¨çš„æœ«å°¾"
         if(pG->vexs[p2].first_edge == NULL)
             pG->vexs[p2].first_edge = node2;
         else
@@ -238,7 +238,7 @@ LGraph* create_example_lgraph()
 }
 
 /*
- * Éî¶ÈÓÅÏÈËÑË÷±éÀúÍ¼µÄµİ¹éÊµÏÖ
+ * æ·±åº¦ä¼˜å…ˆæœç´¢éå†å›¾çš„é€’å½’å®ç°
  */
 static void DFS(LGraph G, int i, int *visited)
 {
@@ -257,14 +257,14 @@ static void DFS(LGraph G, int i, int *visited)
 }
 
 /*
- * Éî¶ÈÓÅÏÈËÑË÷±éÀúÍ¼
+ * æ·±åº¦ä¼˜å…ˆæœç´¢éå†å›¾
  */
 void DFSTraverse(LGraph G)
 {
     int i;
-    int visited[MAX];       // ¶¥µã·ÃÎÊ±ê¼Ç
+    int visited[MAX];       // é¡¶ç‚¹è®¿é—®æ ‡è®°
 
-    // ³õÊ¼»¯ËùÓĞ¶¥µã¶¼Ã»ÓĞ±»·ÃÎÊ
+    // åˆå§‹åŒ–æ‰€æœ‰é¡¶ç‚¹éƒ½æ²¡æœ‰è¢«è®¿é—®
     for (i = 0; i < G.vexnum; i++)
         visited[i] = 0;
 
@@ -278,14 +278,14 @@ void DFSTraverse(LGraph G)
 }
 
 /*
- * ¹ã¶ÈÓÅÏÈËÑË÷£¨ÀàËÆÓÚÊ÷µÄ²ã´Î±éÀú£©
+ * å¹¿åº¦ä¼˜å…ˆæœç´¢ï¼ˆç±»ä¼¼äºæ ‘çš„å±‚æ¬¡éå†ï¼‰
  */
 void BFS(LGraph G)
 {
     int head = 0;
     int rear = 0;
-    int queue[MAX];     // ¸¨×é¶ÓÁĞ
-    int visited[MAX];   // ¶¥µã·ÃÎÊ±ê¼Ç
+    int queue[MAX];     // è¾…ç»„é˜Ÿåˆ—
+    int visited[MAX];   // é¡¶ç‚¹è®¿é—®æ ‡è®°
     int i, j, k;
     ENode *node;
 
@@ -299,11 +299,11 @@ void BFS(LGraph G)
         {
             visited[i] = 1;
             printf("%c ", G.vexs[i].data);
-            queue[rear++] = i;  // Èë¶ÓÁĞ
+            queue[rear++] = i;  // å…¥é˜Ÿåˆ—
         }
         while (head != rear) 
         {
-            j = queue[head++];  // ³ö¶ÓÁĞ
+            j = queue[head++];  // å‡ºé˜Ÿåˆ—
             node = G.vexs[j].first_edge;
             while (node != NULL)
             {
@@ -322,7 +322,7 @@ void BFS(LGraph G)
 }
 
 /*
- * ´òÓ¡ÁÚ½Ó±íÍ¼
+ * æ‰“å°é‚»æ¥è¡¨å›¾
  */
 void print_lgraph(LGraph G)
 {
@@ -344,7 +344,7 @@ void print_lgraph(LGraph G)
 }
 
 /*
- * »ñÈ¡GÖĞ±ß<start, end>µÄÈ¨Öµ£»ÈôstartºÍend²»ÊÇÁ¬Í¨µÄ£¬Ôò·µ»ØÎŞÇî´ó¡£
+ * è·å–Gä¸­è¾¹<start, end>çš„æƒå€¼ï¼›è‹¥startå’Œendä¸æ˜¯è¿é€šçš„ï¼Œåˆ™è¿”å›æ— ç©·å¤§ã€‚
  */
 int get_weight(LGraph G, int start, int end)
 {
@@ -364,91 +364,9 @@ int get_weight(LGraph G, int start, int end)
     return INF;
 }
 
-/*
- * prim×îĞ¡Éú³ÉÊ÷
- *
- * ²ÎÊıËµÃ÷£º
- *       G -- ÁÚ½Ó±íÍ¼
- *   start -- ´ÓÍ¼ÖĞµÄµÚstart¸öÔªËØ¿ªÊ¼£¬Éú³É×îĞ¡Ê÷
- */
-void prim(LGraph G, int start)
-{
-    int min,i,j,k,m,n,tmp,sum;
-    int index=0;         // prim×îĞ¡Ê÷µÄË÷Òı£¬¼´primsÊı×éµÄË÷Òı
-    char prims[MAX];     // prim×îĞ¡Ê÷µÄ½á¹ûÊı×é
-    int weights[MAX];    // ¶¥µã¼ä±ßµÄÈ¨Öµ
-
-    // prim×îĞ¡Éú³ÉÊ÷ÖĞµÚÒ»¸öÊıÊÇ"Í¼ÖĞµÚstart¸ö¶¥µã"£¬ÒòÎªÊÇ´Óstart¿ªÊ¼µÄ¡£
-    prims[index++] = G.vexs[start].data;
-
-    // ³õÊ¼»¯"¶¥µãµÄÈ¨ÖµÊı×é"£¬
-    // ½«Ã¿¸ö¶¥µãµÄÈ¨Öµ³õÊ¼»¯Îª"µÚstart¸ö¶¥µã"µ½"¸Ã¶¥µã"µÄÈ¨Öµ¡£
-    for (i = 0; i < G.vexnum; i++ )
-        weights[i] = get_weight(G, start, i);
-
-    for (i = 0; i < G.vexnum; i++)
-    {
-        // ÓÉÓÚ´Óstart¿ªÊ¼µÄ£¬Òò´Ë²»ĞèÒªÔÙ¶ÔµÚstart¸ö¶¥µã½øĞĞ´¦Àí¡£
-        if(start == i)
-            continue;
-
-        j = 0;
-        k = 0;
-        min = INF;
-        // ÔÚÎ´±»¼ÓÈëµ½×îĞ¡Éú³ÉÊ÷µÄ¶¥µãÖĞ£¬ÕÒ³öÈ¨Öµ×îĞ¡µÄ¶¥µã¡£
-        while (j < G.vexnum)
-        {
-            // Èôweights[j]=0£¬ÒâÎ¶×Å"µÚj¸ö½ÚµãÒÑ¾­±»ÅÅĞò¹ı"(»òÕßËµÒÑ¾­¼ÓÈëÁË×îĞ¡Éú³ÉÊ÷ÖĞ)¡£
-            if (weights[j] != 0 && weights[j] < min)
-            {
-                min = weights[j];
-                k = j;
-            }
-            j++;
-        }
-
-        // ¾­¹ıÉÏÃæµÄ´¦Àíºó£¬ÔÚÎ´±»¼ÓÈëµ½×îĞ¡Éú³ÉÊ÷µÄ¶¥µãÖĞ£¬È¨Öµ×îĞ¡µÄ¶¥µãÊÇµÚk¸ö¶¥µã¡£
-        // ½«µÚk¸ö¶¥µã¼ÓÈëµ½×îĞ¡Éú³ÉÊ÷µÄ½á¹ûÊı×éÖĞ
-        prims[index++] = G.vexs[k].data;
-        // ½«"µÚk¸ö¶¥µãµÄÈ¨Öµ"±ê¼ÇÎª0£¬ÒâÎ¶×ÅµÚk¸ö¶¥µãÒÑ¾­ÅÅĞò¹ıÁË(»òÕßËµÒÑ¾­¼ÓÈëÁË×îĞ¡Ê÷½á¹ûÖĞ)¡£
-        weights[k] = 0;
-        // µ±µÚk¸ö¶¥µã±»¼ÓÈëµ½×îĞ¡Éú³ÉÊ÷µÄ½á¹ûÊı×éÖĞÖ®ºó£¬¸üĞÂÆäËü¶¥µãµÄÈ¨Öµ¡£
-        for (j = 0 ; j < G.vexnum; j++)
-        {
-            // »ñÈ¡µÚk¸ö¶¥µãµ½µÚj¸ö¶¥µãµÄÈ¨Öµ
-            tmp = get_weight(G, k, j);
-            // µ±µÚj¸ö½ÚµãÃ»ÓĞ±»´¦Àí£¬²¢ÇÒĞèÒª¸üĞÂÊ±²Å±»¸üĞÂ¡£
-            if (weights[j] != 0 && tmp < weights[j])
-                weights[j] = tmp;
-        }
-    }
-
-    // ¼ÆËã×îĞ¡Éú³ÉÊ÷µÄÈ¨Öµ
-    sum = 0;
-    for (i = 1; i < index; i++)
-    {
-        min = INF;
-        // »ñÈ¡prims[i]ÔÚGÖĞµÄÎ»ÖÃ
-        n = get_position(G, prims[i]);
-        // ÔÚvexs[0...i]ÖĞ£¬ÕÒ³öµ½jµÄÈ¨Öµ×îĞ¡µÄ¶¥µã¡£
-        for (j = 0; j < i; j++)
-        {
-            m = get_position(G, prims[j]);
-            tmp = get_weight(G, m, n);
-            if (tmp < min)
-                min = tmp;
-        }
-        sum += min;
-    }
-    // ´òÓ¡×îĞ¡Éú³ÉÊ÷
-    printf("PRIM(%c)=%d: ", G.vexs[start].data, sum);
-    for (i = 0; i < index; i++)
-        printf("%c ", prims[i]);
-    printf("\n");
-}
 
 /* 
- * »ñÈ¡Í¼ÖĞµÄ±ß
+ * è·å–å›¾ä¸­çš„è¾¹
  */
 EData* get_edges(LGraph G)
 {
@@ -465,9 +383,9 @@ EData* get_edges(LGraph G)
         {
             if (node->ivex > i)
             {
-                edges[index].start  = G.vexs[i].data;           // Æğµã
-                edges[index].end    = G.vexs[node->ivex].data;  // ÖÕµã
-                edges[index].weight = node->weight;             // È¨
+                edges[index].start  = G.vexs[i].data;           // èµ·ç‚¹
+                edges[index].end    = G.vexs[node->ivex].data;  // ç»ˆç‚¹
+                edges[index].weight = node->weight;             // æƒ
                 index++;
             }
             node = node->next_edge;
@@ -478,7 +396,7 @@ EData* get_edges(LGraph G)
 }
 
 /* 
- * ¶Ô±ß°´ÕÕÈ¨Öµ´óĞ¡½øĞĞÅÅĞò(ÓÉĞ¡µ½´ó)
+ * å¯¹è¾¹æŒ‰ç…§æƒå€¼å¤§å°è¿›è¡Œæ’åº(ç”±å°åˆ°å¤§)
  */
 void sorted_edges(EData* edges, int elen)
 {
@@ -490,7 +408,7 @@ void sorted_edges(EData* edges, int elen)
         {
             if (edges[i].weight > edges[j].weight)
             {
-                // ½»»»"µÚiÌõ±ß"ºÍ"µÚjÌõ±ß"
+                // äº¤æ¢"ç¬¬iæ¡è¾¹"å’Œ"ç¬¬jæ¡è¾¹"
                 EData tmp = edges[i];
                 edges[i] = edges[j];
                 edges[j] = tmp;
@@ -500,7 +418,7 @@ void sorted_edges(EData* edges, int elen)
 }
 
 /*
- * »ñÈ¡iµÄÖÕµã
+ * è·å–içš„ç»ˆç‚¹
  */
 int get_end(int vends[], int i)
 {
@@ -510,82 +428,39 @@ int get_end(int vends[], int i)
 }
 
 /*
- * ¿ËÂ³Ë¹¿¨¶û£¨Kruskal)×îĞ¡Éú³ÉÊ÷
- */
-void kruskal(LGraph G)
-{
-    int i,m,n,p1,p2;
-    int length;
-    int index = 0;          // retsÊı×éµÄË÷Òı
-    int vends[MAX]={0};     // ÓÃÓÚ±£´æ"ÒÑÓĞ×îĞ¡Éú³ÉÊ÷"ÖĞÃ¿¸ö¶¥µãÔÚ¸Ã×îĞ¡Ê÷ÖĞµÄÖÕµã¡£
-    EData rets[MAX];        // ½á¹ûÊı×é£¬±£´ækruskal×îĞ¡Éú³ÉÊ÷µÄ±ß
-    EData *edges;           // Í¼¶ÔÓ¦µÄËùÓĞ±ß
-
-    // »ñÈ¡"Í¼ÖĞËùÓĞµÄ±ß"
-    edges = get_edges(G);
-    // ½«±ß°´ÕÕ"È¨"µÄ´óĞ¡½øĞĞÅÅĞò(´ÓĞ¡µ½´ó)
-    sorted_edges(edges, G.edgnum);
-
-    for (i=0; i<G.edgnum; i++)
-    {
-        p1 = get_position(G, edges[i].start);   // »ñÈ¡µÚiÌõ±ßµÄ"Æğµã"µÄĞòºÅ
-        p2 = get_position(G, edges[i].end);     // »ñÈ¡µÚiÌõ±ßµÄ"ÖÕµã"µÄĞòºÅ
-
-        m = get_end(vends, p1);                 // »ñÈ¡p1ÔÚ"ÒÑÓĞµÄ×îĞ¡Éú³ÉÊ÷"ÖĞµÄÖÕµã
-        n = get_end(vends, p2);                 // »ñÈ¡p2ÔÚ"ÒÑÓĞµÄ×îĞ¡Éú³ÉÊ÷"ÖĞµÄÖÕµã
-        // Èç¹ûm!=n£¬ÒâÎ¶×Å"±ßi"Óë"ÒÑ¾­Ìí¼Óµ½×îĞ¡Éú³ÉÊ÷ÖĞµÄ¶¥µã"Ã»ÓĞĞÎ³É»·Â·
-        if (m != n)
-        {
-            vends[m] = n;                       // ÉèÖÃmÔÚ"ÒÑÓĞµÄ×îĞ¡Éú³ÉÊ÷"ÖĞµÄÖÕµãÎªn
-            rets[index++] = edges[i];           // ±£´æ½á¹û
-        }
-    }
-    free(edges);
-
-    // Í³¼Æ²¢´òÓ¡"kruskal×îĞ¡Éú³ÉÊ÷"µÄĞÅÏ¢
-    length = 0;
-    for (i = 0; i < index; i++)
-        length += rets[i].weight;
-    printf("Kruskal=%d: ", length);
-    for (i = 0; i < index; i++)
-        printf("(%c,%c) ", rets[i].start, rets[i].end);
-    printf("\n");
-}
-
-/*
- * Dijkstra×î¶ÌÂ·¾¶¡£
- * ¼´£¬Í³¼ÆÍ¼(G)ÖĞ"¶¥µãvs"µ½ÆäËü¸÷¸ö¶¥µãµÄ×î¶ÌÂ·¾¶¡£
+ * Dijkstraæœ€çŸ­è·¯å¾„ã€‚
+ * å³ï¼Œç»Ÿè®¡å›¾(G)ä¸­"é¡¶ç‚¹vs"åˆ°å…¶å®ƒå„ä¸ªé¡¶ç‚¹çš„æœ€çŸ­è·¯å¾„ã€‚
  *
- * ²ÎÊıËµÃ÷£º
- *        G -- Í¼
- *       vs -- ÆğÊ¼¶¥µã(start vertex)¡£¼´¼ÆËã"¶¥µãvs"µ½ÆäËü¶¥µãµÄ×î¶ÌÂ·¾¶¡£
- *     prev -- Ç°Çı¶¥µãÊı×é¡£¼´£¬prev[i]µÄÖµÊÇ"¶¥µãvs"µ½"¶¥µãi"µÄ×î¶ÌÂ·¾¶Ëù¾­ÀúµÄÈ«²¿¶¥µãÖĞ£¬Î»ÓÚ"¶¥µãi"Ö®Ç°µÄÄÇ¸ö¶¥µã¡£
- *     dist -- ³¤¶ÈÊı×é¡£¼´£¬dist[i]ÊÇ"¶¥µãvs"µ½"¶¥µãi"µÄ×î¶ÌÂ·¾¶µÄ³¤¶È¡£
+ * å‚æ•°è¯´æ˜ï¼š
+ *        G -- å›¾
+ *       vs -- èµ·å§‹é¡¶ç‚¹(start vertex)ã€‚å³è®¡ç®—"é¡¶ç‚¹vs"åˆ°å…¶å®ƒé¡¶ç‚¹çš„æœ€çŸ­è·¯å¾„ã€‚
+ *     prev -- å‰é©±é¡¶ç‚¹æ•°ç»„ã€‚å³ï¼Œprev[i]çš„å€¼æ˜¯"é¡¶ç‚¹vs"åˆ°"é¡¶ç‚¹i"çš„æœ€çŸ­è·¯å¾„æ‰€ç»å†çš„å…¨éƒ¨é¡¶ç‚¹ä¸­ï¼Œä½äº"é¡¶ç‚¹i"ä¹‹å‰çš„é‚£ä¸ªé¡¶ç‚¹ã€‚
+ *     dist -- é•¿åº¦æ•°ç»„ã€‚å³ï¼Œdist[i]æ˜¯"é¡¶ç‚¹vs"åˆ°"é¡¶ç‚¹i"çš„æœ€çŸ­è·¯å¾„çš„é•¿åº¦ã€‚
  */
 void dijkstra(LGraph G, int vs, int prev[], int dist[])
 {
     int i,j,k;
     int min;
     int tmp;
-    int flag[MAX];      // flag[i]=1±íÊ¾"¶¥µãvs"µ½"¶¥µãi"µÄ×î¶ÌÂ·¾¶ÒÑ³É¹¦»ñÈ¡¡£
+    int flag[MAX];      // flag[i]=1è¡¨ç¤º"é¡¶ç‚¹vs"åˆ°"é¡¶ç‚¹i"çš„æœ€çŸ­è·¯å¾„å·²æˆåŠŸè·å–ã€‚
     
-    // ³õÊ¼»¯
+    // åˆå§‹åŒ–
     for (i = 0; i < G.vexnum; i++)
     {
-        flag[i] = 0;                    // ¶¥µãiµÄ×î¶ÌÂ·¾¶»¹Ã»»ñÈ¡µ½¡£
-        prev[i] = 0;                    // ¶¥µãiµÄÇ°Çı¶¥µãÎª0¡£
-        dist[i] = get_weight(G, vs, i);  // ¶¥µãiµÄ×î¶ÌÂ·¾¶Îª"¶¥µãvs"µ½"¶¥µãi"µÄÈ¨¡£
+        flag[i] = 0;                    // é¡¶ç‚¹içš„æœ€çŸ­è·¯å¾„è¿˜æ²¡è·å–åˆ°ã€‚
+        prev[i] = 0;                    // é¡¶ç‚¹içš„å‰é©±é¡¶ç‚¹ä¸º0ã€‚
+        dist[i] = get_weight(G, vs, i);  // é¡¶ç‚¹içš„æœ€çŸ­è·¯å¾„ä¸º"é¡¶ç‚¹vs"åˆ°"é¡¶ç‚¹i"çš„æƒã€‚
     }
 
-    // ¶Ô"¶¥µãvs"×ÔÉí½øĞĞ³õÊ¼»¯
+    // å¯¹"é¡¶ç‚¹vs"è‡ªèº«è¿›è¡Œåˆå§‹åŒ–
     flag[vs] = 1;
     dist[vs] = 0;
 
-    // ±éÀúG.vexnum-1´Î£»Ã¿´ÎÕÒ³öÒ»¸ö¶¥µãµÄ×î¶ÌÂ·¾¶¡£
+    // éå†G.vexnum-1æ¬¡ï¼›æ¯æ¬¡æ‰¾å‡ºä¸€ä¸ªé¡¶ç‚¹çš„æœ€çŸ­è·¯å¾„ã€‚
     for (i = 1; i < G.vexnum; i++)
     {
-        // Ñ°ÕÒµ±Ç°×îĞ¡µÄÂ·¾¶£»
-        // ¼´£¬ÔÚÎ´»ñÈ¡×î¶ÌÂ·¾¶µÄ¶¥µãÖĞ£¬ÕÒµ½Àëvs×î½üµÄ¶¥µã(k)¡£
+        // å¯»æ‰¾å½“å‰æœ€å°çš„è·¯å¾„ï¼›
+        // å³ï¼Œåœ¨æœªè·å–æœ€çŸ­è·¯å¾„çš„é¡¶ç‚¹ä¸­ï¼Œæ‰¾åˆ°ç¦»vsæœ€è¿‘çš„é¡¶ç‚¹(k)ã€‚
         min = INF;
         for (j = 0; j < G.vexnum; j++)
         {
@@ -595,15 +470,15 @@ void dijkstra(LGraph G, int vs, int prev[], int dist[])
                 k = j;
             }
         }
-        // ±ê¼Ç"¶¥µãk"ÎªÒÑ¾­»ñÈ¡µ½×î¶ÌÂ·¾¶
+        // æ ‡è®°"é¡¶ç‚¹k"ä¸ºå·²ç»è·å–åˆ°æœ€çŸ­è·¯å¾„
         flag[k] = 1;
 
-        // ĞŞÕıµ±Ç°×î¶ÌÂ·¾¶ºÍÇ°Çı¶¥µã
-        // ¼´£¬µ±ÒÑ¾­"¶¥µãkµÄ×î¶ÌÂ·¾¶"Ö®ºó£¬¸üĞÂ"Î´»ñÈ¡×î¶ÌÂ·¾¶µÄ¶¥µãµÄ×î¶ÌÂ·¾¶ºÍÇ°Çı¶¥µã"¡£
+        // ä¿®æ­£å½“å‰æœ€çŸ­è·¯å¾„å’Œå‰é©±é¡¶ç‚¹
+        // å³ï¼Œå½“å·²ç»"é¡¶ç‚¹kçš„æœ€çŸ­è·¯å¾„"ä¹‹åï¼Œæ›´æ–°"æœªè·å–æœ€çŸ­è·¯å¾„çš„é¡¶ç‚¹çš„æœ€çŸ­è·¯å¾„å’Œå‰é©±é¡¶ç‚¹"ã€‚
         for (j = 0; j < G.vexnum; j++)
         {
             tmp = get_weight(G, k, j);
-            tmp = (tmp==INF ? INF : (min + tmp)); // ·ÀÖ¹Òç³ö
+            tmp = (tmp==INF ? INF : (min + tmp)); // é˜²æ­¢æº¢å‡º
             if (flag[j] == 0 && (tmp  < dist[j]) )
             {
                 dist[j] = tmp;
@@ -612,7 +487,7 @@ void dijkstra(LGraph G, int vs, int prev[], int dist[])
         }
     }
 
-    // ´òÓ¡dijkstra×î¶ÌÂ·¾¶µÄ½á¹û
+    // æ‰“å°dijkstraæœ€çŸ­è·¯å¾„çš„ç»“æœ
     printf("dijkstra(%c): \n", G.vexs[vs].data);
     for (i = 0; i < G.vexnum; i++)
         printf("  shortest(%c, %c)=%d\n", G.vexs[vs].data, G.vexs[i].data, dist[i]);
@@ -624,17 +499,17 @@ void main()
     int dist[MAX] = {0};
     LGraph* pG;
 
-    // ×Ô¶¨Òå"Í¼"(×Ô¼ºÊäÈëÊı¾İ)
+    // è‡ªå®šä¹‰"å›¾"(è‡ªå·±è¾“å…¥æ•°æ®)
     //pG = create_lgraph();
-    // ²ÉÓÃÒÑÓĞµÄ"Í¼"
+    // é‡‡ç”¨å·²æœ‰çš„"å›¾"
     pG = create_example_lgraph();
 
-    //print_lgraph(*pG);    // ´òÓ¡Í¼
-    //DFSTraverse(*pG);     // Éî¶ÈÓÅÏÈ±éÀú
-    //BFS(*pG);             // ¹ã¶ÈÓÅÏÈ±éÀú
-    //prim(*pG, 0);         // primËã·¨Éú³É×îĞ¡Éú³ÉÊ÷
-    //kruskal(*pG);         // kruskalËã·¨Éú³É×îĞ¡Éú³ÉÊ÷
+    //print_lgraph(*pG);    // æ‰“å°å›¾
+    //DFSTraverse(*pG);     // æ·±åº¦ä¼˜å…ˆéå†
+    //BFS(*pG);             // å¹¿åº¦ä¼˜å…ˆéå†
+    //prim(*pG, 0);         // primç®—æ³•ç”Ÿæˆæœ€å°ç”Ÿæˆæ ‘
+    //kruskal(*pG);         // kruskalç®—æ³•ç”Ÿæˆæœ€å°ç”Ÿæˆæ ‘
 
-    // dijkstraËã·¨»ñÈ¡"µÚ4¸ö¶¥µã"µ½ÆäËü¸÷¸ö¶¥µãµÄ×î¶Ì¾àÀë
+    // dijkstraç®—æ³•è·å–"ç¬¬4ä¸ªé¡¶ç‚¹"åˆ°å…¶å®ƒå„ä¸ªé¡¶ç‚¹çš„æœ€çŸ­è·ç¦»
     dijkstra(*pG, 3, prev, dist);
 }
