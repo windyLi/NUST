@@ -25,7 +25,7 @@ mkdir bin
 rm -fr build
 mkdir build
 cd build
-cmake ../cdn
+cmake -G"Eclipse CDT4 - Unix Makefiles" -D CMAKE_BUILD_TYPE=Debug ../cdn
 make
 
 cd ..
