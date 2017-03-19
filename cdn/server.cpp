@@ -2,41 +2,104 @@
 #include <algorithm>
 
 #include <vector>
-using std::vector;
-
+#include <map>
 #include <iostream>
-using std::cout; using std::endl;
+#include <string>
 
 #include "server.h"
-#include "graph.h"
+using namespace std;
+#define MAXOUTDEG 1000
+#define MAXCUSNUM 500
 
-
-//根据网络节点出度选定一个出度最大的集合当作最初初始服务器位置
-void ServerSelector::Select(const Graph & g)
+void ServerSelector::CreateFromBuf(char ** buf, NetGraph & netgraph, int line_num)
 {
-	// retrieve the outdegree of each node within graph
+        //vector<string> lines;
+        //int comp = 0;
+        for (int i = 0; i != line_num; ++i) {
+                string line(buf[i]);
+                //lines.push_back(line);
+                vector<string> numbers = str_split(line, " ");
+                int src = std::stoi(numbers[0]);
+                int dst = std::stoi(numbers[1]);
+                int band_width = std::stoi(numbers[2]);
+                int unit_cost  = std::stoi(numbers[3]);
+
+                Edge *edge_src = new Edge, *edge_dst = new Edge;
+                edge_src->index = dst;
+                edge_dst->index = src;
+                edge_src->band_width = edge_dst->band_width = band_width;
+                edge_src->unit_cost  = edge_dst->unit_cost  = unit_cost;
+                edge_src->next_edge = edge_dst->next_edge = nullptr;
+                if (netgraph.vertices[src] == nullptr) {
+                	netgraph.vertices[src] = edge_src;
+                } else {
+                        edge_src->next_edge = netgraph.vertices[src];
+                        netgraph.vertices[src] = edge_src;
+                }
+                if (netgraph.vertices[dst] == nullptr) {
+                	netgraph.vertices[dst] = edge_dst;
+                } else {
+                        edge_dst->next_edge = netgraph.vertices[dst];
+                        netgraph.vertices[dst] = edge_dst;
+                }
+                netgraph.edge_num++;
+        }
+}
+
+
+void ServerSelector::GenEvalueSheet(const NetGraph &g, vector<structnode> &evalu_sheet, const map<int, int> & agency_map){
+
 	int node_num = server_num + backup_num;
-	int out_degree;
+	int out_degree, nerb_custnum;
+	int max_outdeg = 1;
+	int max_nerb_custnum = 0;
+	int min_outdeg = MAXOUTDEG;
+	int min_nerb_custnum = MAXCUSNUM;
 	Edge *edge = nullptr;
-	vector<Node> nodes;
+	evalu_sheet.resize(node_num);
+
 	for (int i = 0; i < node_num; i++) {
 		out_degree = 0;
+		nerb_custnum = 0;
 		edge = g.vertices[i];
 		while (edge != nullptr) {
 			out_degree += 1;
+			if(agency_map.find(edge->index)!= agency_map.end())
+				nerb_custnum += 1;
 			edge = edge->next_edge;
 		}
-		nodes.emplace_back(i, out_degree);
+		evalu_sheet[i].index = i;
+		evalu_sheet[i].out_degree = out_degree;
+		evalu_sheet[i].nerb_agencynum = nerb_custnum;
+		if(out_degree>max_outdeg)
+			max_outdeg = out_degree;
+	    if(out_degree<min_outdeg)
+	    	min_outdeg = out_degree;
+	    if(nerb_custnum > max_nerb_custnum)
+	    	max_nerb_custnum = nerb_custnum;
+	    if(nerb_custnum < min_nerb_custnum)
+	    	min_nerb_custnum = nerb_custnum;
 	}
+}
 
-	// sort nodes by out_degree decrementally
-	std::sort(nodes.begin(), nodes.end(), [] (const Node & a, const Node & b) {
+
+void ServerSelector::SortCustomersByAgency(vector<Customer> & customers)
+{
+	std::sort(customers.begin(), customers.end(), [](const Customer & a, const Customer & b){
+		return a.agency < b.agency;
+	});
+}
+
+//根据evalu_sheet 选择服务器
+void ServerSelector::Select(vector<structnode> & evalu_sheet){
+
+	std::sort(evalu_sheet.begin(), evalu_sheet.end(), [] (const structnode & a, const structnode & b) {
 		return a.out_degree > b.out_degree;
 	});
 
-	servers.insert(servers.end(), nodes.begin(), nodes.begin() + server_num);
-	backups.insert(backups.end(), nodes.begin() + server_num, nodes.end());
-	servers_copy = servers;
+	servers.insert(servers.end(), evalu_sheet.begin(), evalu_sheet.begin() + server_num);
+	backups.insert(backups.end(), evalu_sheet.begin() + server_num, evalu_sheet.end());
+
 }
 
 
@@ -44,8 +107,6 @@ void ServerSelector::Select(const Graph & g)
 //server中节点出度分别为 [a,b,c,d] 替换a的概率p=1-(a-min(server)+1)/(sum(server)-(min(server-1))*4);
 void ServerSelector::Mutate(void)
 {
-	// make a copy of servers before mutating
-	// done within Select() method
 
 	// retrieve the server with minimal out_degree
 	// and the sum of out_degrees of all the servers
@@ -98,7 +159,16 @@ void ServerSelector::Mutate(void)
 	int backup_substitute_pos = iter_max - backup_probabilities.begin();
 
 	std::swap(servers[server_substitute_pos], backups[backup_substitute_pos]);
+	server_rollid = server_substitute_pos;
+	backup_rollid = backup_substitute_pos;
 }
+
+
+void ServerSelector:: Rollback(void){
+	cout << "rollback" << server_rollid << " " << backup_rollid << endl;
+	std::swap(servers[server_rollid], backups[backup_rollid]);
+}
+
 
 //从servers 中提取servers的ID
 //返回值： vector<int> serversid

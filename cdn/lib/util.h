@@ -4,6 +4,8 @@
 
 #include <string>
 #include <vector>
+#include <map>
+using namespace std;
 
 /* function: to split a string by separator
  * input:  @str: target string to split
@@ -11,4 +13,6 @@
  * output: vector of string
  */
 std::vector<std::string> str_split(const std::string &str, const std::string &sep);
+
+string pathString(vector<vector<int>> paths, map<int, int> agency_map,bool find_so);
 #endif

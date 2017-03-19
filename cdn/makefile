@@ -1,6 +1,6 @@
 CXX = g++
 
-INC = -I/home/kawori/teambuilder-master/cdn/lib
+INC = -I/home/full/Desktop/SDK-gcc/SDK-gcc/cdn/lib
 
 CXXFLAGS = -std=c++11
 

@@ -1,4 +1,9 @@
-#include "strlib.h"
+#include <util.h>
+#include <vector>
+#include <string>
+#include <map>
+#include "server.h"
+using namespace std;
 
 std::vector<std::string> str_split(const std::string &str, const std::string &sep)
 {
@@ -38,4 +43,28 @@ std::vector<std::string> str_split(const std::string &str, const std::string &se
                 }
                 return strVec;
         }
+}
+
+string pathString(vector<vector<int>> paths, map<int, int> agency_map,bool find_so){
+	string output = "";
+	if (find_so==false){
+		output="NA";
+		return output;
+	}
+	output += to_string(paths.size())+"\n\n";
+	for (auto i=0;i<paths.size();i++){
+		auto len = paths[i].size();
+		for (auto j=0;j<len;j++){
+			if(j==len-1){
+				output+= to_string(agency_map[paths[i][1]])+" "+to_string(paths[i][0]);
+			}
+			else{
+				output+=to_string(paths[i][len-1-j])+" ";
+			}
+		}
+		if(i!=paths.size()-1){
+			output+="\n";
+		}
+	}
+	return output;
 }
