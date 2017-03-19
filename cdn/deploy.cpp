@@ -84,10 +84,15 @@ void deploy_server(char * topo[MAX_EDGE_NUM], int line_num, char * filename)
 	SETZR(pointer);
 	vector<vector<int>> paths;
 	bool find_so = true;
+	map<int,int>  valid_server;
 
 	int customer_demand = dataLoad(topo,servers,line_num, m,n,s,t,pointer);
 
-	int cost = findCost(paths, pointer, n,  s,t);
+	int cost = findCost(paths,valid_server, pointer, n, s,t);
+
+	for(map<int,int>::iterator it = valid_server.begin(); it != valid_server.end(); it++){
+	cout<<it->first<<" "<<it->second<<endl;
+	}
 
 	cout<<customer_demand<<endl;
 	for (auto i=0;i<paths.size();i++){

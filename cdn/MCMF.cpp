@@ -141,7 +141,11 @@ bool vis[maxn];
  };
 priority_queue<int,vector<int>,cmp> q;
 
-bool spfa(vector<int> & path, int &ans, int * pointer, int n, int s,int t) {
+/*
+ * ans: dist
+ *
+ * */
+bool spfa(vector<int> & path, int &ans, int * pointer, int n, int s,int t,map<int,int> &valid_server ) {
 	int  aug, k, p;
     memset(vis, 0, sizeof (vis));
     for (int i = 0; i < n; i++) dist[i] = INF;
@@ -169,15 +173,24 @@ bool spfa(vector<int> & path, int &ans, int * pointer, int n, int s,int t) {
     for (p=pre[t]; p; p=pre[edge[p^1].v])
         aug = min(aug, edge[p].f);
 
+    int server;
     for (p=pre[t]; p; p=pre[edge[p^1].v]) {
-    	if (edge[p].v!=t)
+    	if (edge[p].v!=t){
     		path.push_back(edge[p].v);
+    		server = edge[p].v;
+    	}
     	else
     		path.push_back(aug);
         edge[p].f -= aug;
         edge[p^1].f += aug;
     }
     ans += dist[t] * aug;
+    if (valid_server.find(server)!=valid_server.end()){
+    	valid_server[server]+=aug;
+    }
+    else{
+    	valid_server[server] = aug;
+    }
     return true;
 }
 
@@ -189,14 +202,15 @@ bool spfa(vector<int> & path, int &ans, int * pointer, int n, int s,int t) {
  * vector<vector<int>> paths: 最短路径
  * int &pointer[maxn]
  * */
-int findCost(vector<vector<int>> &paths, int * pointer, int n, int s,int t){
+int findCost(vector<vector<int>> &paths, map<int,int> &valid_server, int * pointer, int n, int s,int t){
 	int ans=0;//传输费用
 	int count = 1;
 	bool flag = true;
+
 	while (flag){
 		cout<<"spfa:"<<count++<<endl;
 		vector<int> path;
-		flag = spfa(path, ans,pointer,n,s,t);
+		flag = spfa(path, ans,pointer,n,s,t,valid_server);
 		if (flag==true){
 			paths.push_back(path);
 		}
